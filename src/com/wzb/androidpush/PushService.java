@@ -20,7 +20,7 @@ import android.os.SystemProperties;
  */
 public class PushService extends Service {
 	
-	private static final String ANDROID_PUSH_HTTP_URL_NOVATECH="persist.sys.custom_adbroot";
+	private static final String ANDROID_PUSH_HTTP_URL_NOVATECH="persist.sys.push_url_novatech";
 	private static final String ANDROID_PUSH_HTTP_URL_NOVATECH_DEFAULT="http://lib.huayinghealth.com/";
 	private Context mContext;
 	private int requestCode = (int) SystemClock.uptimeMillis();
@@ -65,8 +65,8 @@ public class PushService extends Service {
 				}
 				break;
 			case 0xff:
-				String http_url=SystemProperties.get(ANDROID_PUSH_HTTP_URL_NOVATECH, ANDROID_PUSH_HTTP_URL_NOVATECH_DEFAULT);
-				http_request(http_url);
+				//String http_url=SystemProperties.get(ANDROID_PUSH_HTTP_URL_NOVATECH, ANDROID_PUSH_HTTP_URL_NOVATECH_DEFAULT);
+				http_request(ANDROID_PUSH_HTTP_URL_NOVATECH_DEFAULT);
 				break;
 			default:
 				break;
@@ -84,6 +84,7 @@ public class PushService extends Service {
 				Message msg = new Message();
 				Bundle data = new Bundle();
 				rs=HttpUtils.httpGetString(http_url);
+				//Log.d("wzb","url="+http_url+" rs="+rs);
 				data.putString("value", rs);
 				msg.setData(data);
 				msg.what = 0xf1;
@@ -99,7 +100,7 @@ public class PushService extends Service {
 	}
 	
 	void handle_event(String msg){
-		
+		show_notify();
 	}
 	
 	private void show_notify() {
