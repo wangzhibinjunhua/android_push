@@ -4,6 +4,10 @@ package com.wzb.androidpush;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import cn.trinea.android.common.util.HttpUtils;
 import cn.trinea.android.common.util.JSONUtils;
 import android.R.integer;
@@ -119,26 +123,38 @@ public class PushService extends Service {
 	}
 	
 	void handle_event(String msg){
-		int interval=JSONUtils.getInt(msg, "interval", 3);
-		//Log.d("wzb","interval="+interval);
-		if(interval>3){
-			SystemProperties.set(ANDROID_PUSH_INTERVAL_NOVATECH, ""+interval);
+		JSONArray jsonArray=JSONUtils.getJSONArray(msg, "message", null);
+		JSONObject jsonObject;
+		try {
+			jsonObject = jsonArray.getJSONObject(0);
+			if(jsonObject!=null){
+				int interval=JSONUtils.getInt(jsonObject, "interval", 3);
+				Log.d("wzb","interval="+interval);
+				if(interval>3){
+					SystemProperties.set(ANDROID_PUSH_INTERVAL_NOVATECH, ""+interval);
+				}
+				int id=JSONUtils.getInt(jsonObject, "id",0);
+				if(id>0){
+					SystemProperties.set(ANDROID_PUSH_ID_NOVATECH, ""+id);
+				}
+				String ticker=JSONUtils.getString(jsonObject, "ticker","");
+				Log.d("wzb","ticker="+ticker);
+				String title=JSONUtils.getString(jsonObject, "title","");
+				Log.d("wzb","title="+title);
+				String content=JSONUtils.getString(jsonObject, "content","");
+				Log.d("wzb","content="+content);
+				String url=JSONUtils.getString(jsonObject, "url","");
+				Log.d("wzb","url="+url);
+				if(!TextUtils.isEmpty(content) && !TextUtils.isEmpty(title)){
+					show_notify(ticker,title,content,url);
+				}
+			}
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		int id=JSONUtils.getInt(msg, "id",0);
-		if(id>0){
-			SystemProperties.set(ANDROID_PUSH_ID_NOVATECH, ""+id);
-		}
-		String ticker=JSONUtils.getString(msg, "ticker","");
-		//Log.d("wzb","ticker="+ticker);
-		String title=JSONUtils.getString(msg, "title","");
-		//Log.d("wzb","title="+title);
-		String content=JSONUtils.getString(msg, "content","");
-		//Log.d("wzb","content="+content);
-		String url=JSONUtils.getString(msg, "url","");
-		//Log.d("wzb","url="+url);
-		if(!TextUtils.isEmpty(content) && !TextUtils.isEmpty(title)){
-			show_notify(ticker,title,content,url);
-		}
+		
+		
 		
 	}
 	
