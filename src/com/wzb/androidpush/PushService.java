@@ -25,7 +25,7 @@ public class PushService extends Service {
 	private static final String ANDROID_PUSH_HTTP_URL_NOVATECH_DEFAULT="http://lib.huayinghealth.com/";
 	
 	private static final String ANDROID_PUSH_INTERVAL_NOVATECH="persist.sys.push_int_novatech";
-	private static final int ANDROID_PUSH_INTERVAL_NOVATECH_DEFAULT=3000; //ms default 3minutes
+	private static final int ANDROID_PUSH_INTERVAL_NOVATECH_DEFAULT=3; //s default 3minutes
 	private Context mContext;
 	private int requestCode = (int) SystemClock.uptimeMillis();
 	@Override
@@ -93,7 +93,7 @@ public class PushService extends Service {
 				msg.setData(data);
 				msg.what = 0xf1;
 				mHandler.sendMessage(msg);
-				int interval=SystemProperties.getInt(ANDROID_PUSH_INTERVAL_NOVATECH, ANDROID_PUSH_INTERVAL_NOVATECH_DEFAULT);
+				int interval=SystemProperties.getInt(ANDROID_PUSH_INTERVAL_NOVATECH, ANDROID_PUSH_INTERVAL_NOVATECH_DEFAULT)*1000;
 				mHandler.sendEmptyMessageDelayed(0xff, interval);
 
 			}
