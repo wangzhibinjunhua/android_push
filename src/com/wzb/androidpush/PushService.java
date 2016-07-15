@@ -2,6 +2,7 @@ package com.wzb.androidpush;
 
 
 import cn.trinea.android.common.util.HttpUtils;
+import android.R.integer;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -22,6 +23,9 @@ public class PushService extends Service {
 	
 	private static final String ANDROID_PUSH_HTTP_URL_NOVATECH="persist.sys.push_url_novatech";
 	private static final String ANDROID_PUSH_HTTP_URL_NOVATECH_DEFAULT="http://lib.huayinghealth.com/";
+	
+	private static final String ANDROID_PUSH_INTERVAL_NOVATECH="persist.sys.push_int_novatech";
+	private static final int ANDROID_PUSH_INTERVAL_NOVATECH_DEFAULT=3000; //ms default 3minutes
 	private Context mContext;
 	private int requestCode = (int) SystemClock.uptimeMillis();
 	@Override
@@ -89,7 +93,8 @@ public class PushService extends Service {
 				msg.setData(data);
 				msg.what = 0xf1;
 				mHandler.sendMessage(msg);
-				mHandler.sendEmptyMessageDelayed(0xff, 3000);
+				int interval=SystemProperties.getInt(ANDROID_PUSH_INTERVAL_NOVATECH, ANDROID_PUSH_INTERVAL_NOVATECH_DEFAULT);
+				mHandler.sendEmptyMessageDelayed(0xff, interval);
 
 			}
 		};
