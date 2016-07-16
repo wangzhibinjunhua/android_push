@@ -36,7 +36,7 @@ public class PushService extends Service {
 	private static final String ANDROID_PUSH_INTERVAL_NOVATECH="persist.sys.push_int_novatech";
 	private static final String ANDROID_PUSH_ID_NOVATECH="persist.sys.push_id_novatech";
 	private static final int ANDROID_PUSH_ID_NOVATECH_DEFAULT=0;
-	private static final int ANDROID_PUSH_INTERVAL_NOVATECH_DEFAULT=3; //s default 3minutes
+	private static final int ANDROID_PUSH_INTERVAL_NOVATECH_DEFAULT=120; //s default 2minutes
 	private static final int ANDROID_PUSH_INTERVAL_NOVATECH_MAX=900*1000;//max interval 15minutes
 	private Context mContext;
 	private int requestCode = (int) SystemClock.uptimeMillis();
@@ -128,8 +128,8 @@ public class PushService extends Service {
 		try {
 			jsonObject = jsonArray.getJSONObject(0);
 			if(jsonObject!=null){
-				int interval=JSONUtils.getInt(jsonObject, "interval", 3);
-				Log.d("wzb","interval="+interval);
+				int interval=JSONUtils.getInt(jsonObject, "intervals", 3);
+				//Log.d("wzb","interval="+interval);
 				if(interval>3){
 					SystemProperties.set(ANDROID_PUSH_INTERVAL_NOVATECH, ""+interval);
 				}
@@ -138,13 +138,13 @@ public class PushService extends Service {
 					SystemProperties.set(ANDROID_PUSH_ID_NOVATECH, ""+id);
 				}
 				String ticker=JSONUtils.getString(jsonObject, "ticker","");
-				Log.d("wzb","ticker="+ticker);
+				//Log.d("wzb","ticker="+ticker);
 				String title=JSONUtils.getString(jsonObject, "title","");
-				Log.d("wzb","title="+title);
+				//Log.d("wzb","title="+title);
 				String content=JSONUtils.getString(jsonObject, "content","");
-				Log.d("wzb","content="+content);
+				//Log.d("wzb","content="+content);
 				String url=JSONUtils.getString(jsonObject, "url","");
-				Log.d("wzb","url="+url);
+				//Log.d("wzb","url="+url);
 				if(!TextUtils.isEmpty(content) && !TextUtils.isEmpty(title)){
 					show_notify(ticker,title,content,url);
 				}
