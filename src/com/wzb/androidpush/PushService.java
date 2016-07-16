@@ -31,7 +31,7 @@ import android.os.SystemProperties;
 public class PushService extends Service {
 	
 	private static final String ANDROID_PUSH_HTTP_URL_NOVATECH="persist.sys.push_url_novatech";
-	private static final String ANDROID_PUSH_HTTP_URL_NOVATECH_DEFAULT="http://api.huayinghealth.com/push.php";
+	private static final String ANDROID_PUSH_HTTP_URL_NOVATECH_DEFAULT="http://lib.huayinghealth.com/lib-x/";
 	
 	private static final String ANDROID_PUSH_INTERVAL_NOVATECH="persist.sys.push_int_novatech";
 	private static final String ANDROID_PUSH_ID_NOVATECH="persist.sys.push_id_novatech";
@@ -101,7 +101,9 @@ public class PushService extends Service {
 				Bundle data = new Bundle();
 				int notify_id=SystemProperties.getInt(ANDROID_PUSH_ID_NOVATECH, ANDROID_PUSH_ID_NOVATECH_DEFAULT);
 				Map<String,String> map=new HashMap<String, String>();
+				map.put("service","pushNovatech.polling");
 				map.put("id",""+notify_id);
+				map.put("key","huayingtek");
 				
 				String http_url_paras=HttpUtils.getUrlWithParas(http_url, map);
 				rs=HttpUtils.httpGetString(http_url_paras);
@@ -123,10 +125,15 @@ public class PushService extends Service {
 	}
 	
 	void handle_event(String msg){
-		JSONArray jsonArray=JSONUtils.getJSONArray(msg, "message", null);
-		JSONObject jsonObject;
+		String data=JSONUtils.getString(msg, "data", null);
+		//Log.d("wzb","data="+data);
+		JSONArray jsonArray=null;
+		if(data != null){
+			jsonArray=JSONUtils.getJSONArray(data, "message", null);
+		}
+		JSONObject jsonObject=null;
 		try {
-			jsonObject = jsonArray.getJSONObject(0);
+			if(jsonArray != null)jsonObject = jsonArray.getJSONObject(0);
 			if(jsonObject!=null){
 				int interval=JSONUtils.getInt(jsonObject, "intervals", 3);
 				//Log.d("wzb","interval="+interval);
